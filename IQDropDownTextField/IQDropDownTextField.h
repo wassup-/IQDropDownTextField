@@ -206,7 +206,7 @@ typedef NS_ENUM(NSInteger, IQDropDownMode) {
 /**
  Date formatter to show date as text in textField.
  */
-@property (nonatomic, retain) NSDateFormatter *dateFormatter UI_APPEARANCE_SELECTOR;
+@property (nonatomic, retain) NSDateFormatter *dateFormatter;
 
 
 ///-------------------------------
