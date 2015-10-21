@@ -81,13 +81,11 @@
 	
     if ([[[self class] appearance] dateFormatter])
     {
-        self.dropDownDateFormatter = [[NSDateFormatter alloc] init];
         self.dropDownDateFormatter = [[[self class] appearance] dateFormatter];
     }
     else
     {
         self.dropDownDateFormatter = [[NSDateFormatter alloc] init];
-        //        [self.dropDownDateFormatter setDateFormat:@"dd MMM yyyy"];
         [self.dropDownDateFormatter setDateStyle:NSDateFormatterMediumStyle];
         [self.dropDownDateFormatter setTimeStyle:NSDateFormatterNoStyle];
     }
@@ -103,10 +101,7 @@
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self)
-    {
-        [self initialize];
-    }
+    [self initialize];
     return self;
 }
 
@@ -276,7 +271,7 @@
         {
             if (self.isOptionalDropDown)
             {
-                return  [self.text length]  ?   [self.datePicker.date copy]    :   nil;    break;
+                return  [self.text length]  ?   [self.datePicker.date copy]    :   nil;
             }
             else
             {
@@ -287,14 +282,14 @@
         {
             if (self.isOptionalDropDown)
             {
-                return  [self.text length]  ?   [self.timePicker.date copy]    :   nil;    break;
+                return  [self.text length]  ?   [self.timePicker.date copy]    :   nil;
             }
             else
             {
                 return [self.timePicker.date copy];
             }
         }
-        default:                        return  nil;                     break;
+        default:                        return  nil;
     }
 }
 
@@ -530,7 +525,6 @@
 {
 	if (!_timePicker)
 	{
-		_timePicker = [[UIDatePicker alloc] init];
 		_timePicker = [[UIDatePicker alloc] init];
 		[_timePicker setAutoresizingMask:(UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight)];
 		[_timePicker setDatePickerMode:UIDatePickerModeTime];
