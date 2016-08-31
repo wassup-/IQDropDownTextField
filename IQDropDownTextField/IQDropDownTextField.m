@@ -57,7 +57,7 @@
 @synthesize maximumDate = _maximumDate;
 @synthesize optionalItemText = _optionalItemText;
 
-@dynamic delegate;
+@synthesize dropDownDelegate = _dropDownDelegate;
 
 @synthesize pickerView = _pickerView, datePicker = _datePicker, timePicker = _timePicker, customPicker = _customPicker;
 @synthesize dropDownDateFormatter,dropDownTimeFormatter;
@@ -76,9 +76,9 @@
 {
     [self setContentVerticalAlignment:UIControlContentVerticalAlignmentCenter];
     [self setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-	
+
 	self.optionalItemText = NSLocalizedString(@"Select", nil);
-	
+
     if ([[[self class] appearance] dateFormatter])
     {
         self.dropDownDateFormatter = [[[self class] appearance] dateFormatter];
@@ -89,11 +89,11 @@
         [self.dropDownDateFormatter setDateStyle:NSDateFormatterMediumStyle];
         [self.dropDownDateFormatter setTimeStyle:NSDateFormatterNoStyle];
     }
-    
+
     self.dropDownTimeFormatter = [[NSDateFormatter alloc] init];
     [self.dropDownTimeFormatter setDateStyle:NSDateFormatterNoStyle];
     [self.dropDownTimeFormatter setTimeStyle:NSDateFormatterShortStyle];
-	
+
     [self setDropDownMode:IQDropDownModeTextPicker];
     [self setIsOptionalDropDown:YES];
 }
@@ -139,7 +139,7 @@
     [labelText setAdjustsFontSizeToFitWidth:YES];
     [labelText setText:[_ItemListsInternal objectAtIndex:row]];
     labelText.backgroundColor = [UIColor clearColor];
-    
+
     if (self.isOptionalDropDown && row == 0)
     {
         labelText.font = [UIFont boldSystemFontOfSize:30.0];
@@ -201,7 +201,7 @@
         {
             self.text = [_ItemListsInternal objectAtIndex:row];
         }
-        
+
         [self.pickerView selectRow:row inComponent:0 animated:animated];
     }
 }
@@ -211,7 +211,7 @@
 - (void)setDropDownMode:(IQDropDownMode)dropDownMode
 {
     _dropDownMode = dropDownMode;
-    
+
     switch (_dropDownMode)
     {
         case IQDropDownModeTextPicker:
@@ -223,7 +223,7 @@
         case IQDropDownModeDatePicker:
         {
             self.inputView = self.datePicker;
-            
+
             if (self.isOptionalDropDown == NO)
             {
                 [self setDate:self.datePicker.date];
@@ -233,7 +233,7 @@
         case IQDropDownModeTimePicker:
         {
             self.inputView = self.timePicker;
-        
+
             if (self.isOptionalDropDown == NO)
             {
                 [self setDate:self.timePicker.date];
@@ -256,10 +256,10 @@
 - (void)setItemList:(NSArray *)itemList
 {
     _itemList = itemList;
-    
+
     //Refreshing pickerView
     [self setIsOptionalDropDown:_isOptionalDropDown];
-    
+
     [self setSelectedRow:self.selectedRow];
 }
 
@@ -348,11 +348,11 @@
             if ([_ItemListsInternal containsObject:selectedItem])
             {
                 _selectedItem = selectedItem;
-                
+
                 [self setSelectedRow:[_ItemListsInternal indexOfObject:selectedItem] animated:animated];
-                
-                if ([self.delegate respondsToSelector:@selector(textField:didSelectItem:)])
-                    [self.delegate textField:self didSelectItem:_selectedItem];
+
+                if ([self.dropDownDelegate respondsToSelector:@selector(textField:didSelectItem:)])
+                    [self.dropDownDelegate textField:self didSelectItem:_selectedItem];
             }
             break;
         case IQDropDownModeDatePicker:
@@ -363,9 +363,9 @@
                 _selectedItem = selectedItem;
                 self.text = selectedItem;
                 [self.datePicker setDate:date animated:animated];
-                
-                if ([self.delegate respondsToSelector:@selector(textField:didSelectItem:)])
-                    [self.delegate textField:self didSelectItem:_selectedItem];
+
+                if ([self.dropDownDelegate respondsToSelector:@selector(textField:didSelectItem:)])
+                    [self.dropDownDelegate textField:self didSelectItem:_selectedItem];
             }
             else if ([selectedItem length])
             {
@@ -381,9 +381,9 @@
                 _selectedItem = selectedItem;
                 self.text = selectedItem;
                 [self.timePicker setDate:date animated:animated];
-                
-                if ([self.delegate respondsToSelector:@selector(textField:didSelectItem:)])
-                    [self.delegate textField:self didSelectItem:_selectedItem];
+
+                if ([self.dropDownDelegate respondsToSelector:@selector(textField:didSelectItem:)])
+                    [self.dropDownDelegate textField:self didSelectItem:_selectedItem];
             }
             else if([selectedItem length])
             {
@@ -400,7 +400,7 @@
     {
         _datePickerMode = datePickerMode;
         [self.datePicker setDatePickerMode:datePickerMode];
-        
+
         switch (datePickerMode) {
             case UIDatePickerModeCountDownTimer:
                 [self.dropDownDateFormatter setDateStyle:NSDateFormatterNoStyle];
@@ -425,7 +425,7 @@
 -(void)setMinimumDate:(NSDate *)minimumDate
 {
     _minimumDate = minimumDate;
-    
+
     self.datePicker.minimumDate = minimumDate;
     self.timePicker.minimumDate = minimumDate;
 }
@@ -433,7 +433,7 @@
 -(void)setMaximumDate:(NSDate *)maximumDate
 {
     _maximumDate = maximumDate;
-    
+
     self.datePicker.maximumDate = maximumDate;
     self.timePicker.maximumDate = maximumDate;
 }
@@ -460,7 +460,7 @@
 -(void)setIsOptionalDropDown:(BOOL)isOptionalDropDown
 {
     _isOptionalDropDown = isOptionalDropDown;
-    
+
 	[self _updateOptionsList];
 }
 
@@ -474,7 +474,7 @@
 	else
 	{
 		_ItemListsInternal = [_itemList copy];
-		
+
 		switch (self.dropDownMode)
 		{
 			case IQDropDownModeDatePicker:
@@ -487,7 +487,7 @@
 				[self setDate:self.timePicker.date];
 			}
 				break;
-				
+
 			case IQDropDownModeTextPicker:
 			{
 				[self.pickerView reloadAllComponents];
@@ -503,8 +503,13 @@
     if (action == @selector(paste:) || action == @selector(cut:))
         return NO;
 
-    
+
     return [super canPerformAction:action withSender:sender];
+}
+
+- (void)setDropDownDelegate:(id<IQDropDownTextFieldDelegate>)dropDownDelegate {
+    _dropDownDelegate = dropDownDelegate;
+    _customPicker = nil;
 }
 
 #pragma mark - Getter
@@ -547,8 +552,8 @@
 
 - (UIPickerView *) customPicker {
 	if(!_customPicker) {
-		if([self.delegate respondsToSelector:@selector(getPickerViewForTextField:)]) {
-			_customPicker = [self.delegate getPickerViewForTextField:self];
+		if([self.dropDownDelegate respondsToSelector:@selector(getPickerViewForTextField:)]) {
+			_customPicker = [self.dropDownDelegate getPickerViewForTextField:self];
 		}
 	}
 	return _customPicker;

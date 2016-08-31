@@ -33,10 +33,10 @@
 
  `IQDropDownModeTextPicker`
  Show pickerView with provided text data.
- 
+
  `IQDropDownModeTimePicker`
  Show UIDatePicker to pick time.
- 
+
  `IQDropDownModeDatePicker`
  Show UIDatePicker to pick date.
  */
@@ -81,7 +81,7 @@ typedef NS_ENUM(NSInteger, IQDropDownMode) {
  */
 @interface IQDropDownTextField : UITextField
 
-@property(nonatomic,assign) id<IQDropDownTextFieldDelegate> delegate;             // default is nil. weak reference
+@property(nonatomic,assign) id<IQDropDownTextFieldDelegate> dropDownDelegate;             // default is nil. weak reference
 
 /**
  DropDownMode style to show in picker. Default is IQDropDownModeTextPicker.
